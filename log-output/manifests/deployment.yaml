@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: logoutput
+  name: logoutput
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: logoutput
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: logoutput
+    spec:
+      containers:
+      - image: joyboy67/log-output:1.1
+        name: log-output
+        resources: {}
+status: {}
