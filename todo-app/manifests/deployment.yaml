@@ -18,7 +18,7 @@ spec:
         app: todo-app-deployment
     spec:
       containers:
-      - image: joyboy67/todo-app:1.2
-        name: todo-app
-        resources: {}
+        - image: joyboy67/todo-app:1.5
+          name: todo-app
+          resources: {}
 status: {}
