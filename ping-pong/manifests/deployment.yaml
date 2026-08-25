@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ping-pong-dep
+  name: ping-pong-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ping-pong-dep
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: ping-pong-dep
+    spec:
+      containers:
+        - image: joyboy67/ping-pong:1.9.1
+          name: ping-pong
+          resources: {}
+status: {}
