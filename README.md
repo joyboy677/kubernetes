@@ -10,3 +10,4 @@
 | 1.4 | [Todo app](https://github.com/joyboy677/kubernetes/tree/1.4/todo-app) |
 | 1.5 | [Todo app](https://github.com/joyboy677/kubernetes/tree/1.5/todo-app) |
 | 1.6 | [Todo app](https://github.com/joyboy677/kubernetes/tree/1.6/todo-app) |
+| 1.7 | [Log output](https://github.com/joyboy677/kubernetes/tree/1.7/log-output) |

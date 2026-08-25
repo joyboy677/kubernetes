@@ -18,7 +18,7 @@ spec:
         app: logoutput
     spec:
       containers:
-      - image: joyboy67/log-output:1.1
-        name: log-output
-        resources: {}
+        - image: joyboy67/log-output:1.7
+          name: log-output
+          resources: {}
 status: {}
