@@ -3,7 +3,7 @@ set -e
 
 # Usage check
 if [ -z "$1" ]; then
-  echo "Error: Please provide a version tag (e.g., ./release.sh 1.2)"
+  echo "Error: Please provide a version tag (e.g., ./script.sh 1.2)"
   exit 1
 fi
 
