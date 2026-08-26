@@ -13,3 +13,4 @@
 | 1.7 | [Log output](https://github.com/joyboy677/kubernetes/tree/1.7/log-output) |
 | 1.8 | [Todo app](https://github.com/joyboy677/kubernetes/tree/1.8/todo-app) |
 | 1.9 | [ping pong](https://github.com/joyboy677/kubernetes/tree/1.9/ping-pong) |
+| 1.10 | [Log output](https://github.com/joyboy677/kubernetes/tree/1.10/log-output) |
