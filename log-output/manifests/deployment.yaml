@@ -18,14 +18,14 @@ spec:
         app: logoutput
     spec:
       containers:
-        - image: joyboy67/log-output:1.10
+        - image: joyboy67/log-output:1.11.2
           name: log-writer
           command: ["node", "writer.js"]
           volumeMounts:
             - name: shared-logs
               mountPath: /usr/src/app/files
 
-        - image: joyboy67/log-output:1.10
+        - image: joyboy67/log-output:1.11.2
           name: log-reader
           command: ["node", "reader.js"]
           volumeMounts:
@@ -33,5 +33,5 @@ spec:
               mountPath: /usr/src/app/files
       volumes:
         - name: shared-logs
-          emptyDir: {}
-status: {}
+          persistentVolumeClaim:
+            claimName: log-claim

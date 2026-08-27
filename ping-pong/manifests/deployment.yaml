@@ -18,7 +18,12 @@ spec:
         app: ping-pong-dep
     spec:
       containers:
-        - image: joyboy67/ping-pong:1.9.1
+        - image: joyboy67/ping-pong:1.11.2
           name: ping-pong
-          resources: {}
-status: {}
+          volumeMounts:
+            - name: shared-logs
+              mountPath: /usr/src/app/files
+      volumes:
+        - name: shared-logs
+          persistentVolumeClaim:
+            claimName: log-claim
