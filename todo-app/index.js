@@ -57,20 +57,147 @@ app.get('/image.jpg', async (req, res) => {
 
 app.get('/', async (req, res) => {
     await ensureValidImage();
+
+    const todos = [
+        'Learn Kubernetes basics',
+        'Deploy application to cluster',
+        'Configure persistent volumes'
+    ];
+
+    const todoItems = todos
+        .map(todo => `<li class="todo-item">${todo}</li>`)
+        .join('\n');
+
     res.send(`
     <!DOCTYPE html>
     <html>
       <head>
         <title>Todo App</title>
         <style>
-          body { font-family: sans-serif; margin: 2rem; }
-          img { max-width: 400px; height: auto; border-radius: 8px; margin: 10px 0; }
+          * { box-sizing: border-box; }
+
+          body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 2rem;
+            background: #ffffff;
+            color: #333;
+          }
+
+          .container {
+            max-width: 600px;
+            margin: 0 auto;
+          }
+
+          h1 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+          }
+
+          .image-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+          }
+
+          .image-wrapper img {
+            width: 180px;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+          }
+
+          #todo-form {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+          }
+
+          #todo-input {
+            flex: 1;
+            padding: 0.65rem 1rem;
+            font-size: 0.95rem;
+            border: 1px solid #4caf50;
+            border-radius: 6px;
+            outline: none;
+          }
+
+          #todo-input:focus {
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+          }
+
+          button {
+            padding: 0.65rem 1.5rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #fff;
+            background: #4caf50;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+          }
+
+          button:hover {
+            background: #439a46;
+          }
+
+          h2 {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+          }
+
+          #todo-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+          }
+
+          .todo-item {
+            background: #fafafa;
+            border-left: 4px solid #4caf50;
+            padding: 0.9rem 1rem;
+            margin-bottom: 0.6rem;
+            border-radius: 4px;
+          }
         </style>
       </head>
       <body>
-        <h1>Todo App</h1>
-        <div><img src="/image.jpg" alt="Picsum Hourly Image" /></div>
-        <p>DevOps with Kubernetes 2026</p>
+        <div class="container">
+          <h1>Todo App</h1>
+
+          <div class="image-wrapper">
+            <img src="/image.jpg" alt="Picsum Hourly Image" />
+          </div>
+
+          <form id="todo-form">
+            <input
+              type="text"
+              id="todo-input"
+              maxlength="140"
+              placeholder="Enter a new todo (max 140 characters)"
+              required
+            />
+            <button type="submit">Send</button>
+          </form>
+
+          <h2>Todos</h2>
+          <ul id="todo-list">
+            ${todoItems}
+          </ul>
+        </div>
+
+        <script>
+          const form = document.getElementById('todo-form');
+          const input = document.getElementById('todo-input');
+
+          form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Sending functionality comes later.
+            console.log('Todo submitted:', input.value);
+          });
+        </script>
       </body>
     </html>
   `);

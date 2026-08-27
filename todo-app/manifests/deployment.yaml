@@ -18,7 +18,7 @@ spec:
         app: todo-app-deployment
     spec:
       containers:
-        - image: joyboy67/todo-app:1.12.1
+        - image: joyboy67/todo-app:1.13
           name: todo-app
           volumeMounts:
             - mountPath: /app/files
