@@ -18,7 +18,12 @@ spec:
         app: todo-app-deployment
     spec:
       containers:
-        - image: joyboy67/todo-app:1.5
+        - image: joyboy67/todo-app:1.12.1
           name: todo-app
-          resources: {}
-status: {}
+          volumeMounts:
+            - mountPath: /app/files
+              name: todo-storage
+      volumes:
+        - name: todo-storage
+          persistentVolumeClaim:
+            claimName: log-claim
