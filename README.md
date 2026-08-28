@@ -18,3 +18,4 @@
 | 1.12 | [Todo app](https://github.com/joyboy677/kubernetes/tree/1.12/todo-app) |
 | 1.13 | [Todo app](https://github.com/joyboy677/kubernetes/tree/1.13/todo-app) |
 | 2.1 | [Log output](https://github.com/joyboy677/kubernetes/tree/2.1/log-output) |
+| 2.2 | [todo backend](https://github.com/joyboy677/kubernetes/tree/2.2/todo-backend) |

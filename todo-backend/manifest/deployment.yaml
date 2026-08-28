@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: todo-backend-dep
+  name: todo-backend-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo-backend-dep
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: todo-backend-dep
+    spec:
+      containers:
+        - image: joyboy67/todo-backend:2.1
+          name: todo-backend
+          resources: {}
+status: {}
