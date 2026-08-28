@@ -7,7 +7,7 @@ metadata:
   name: ping-pong-svc
 spec:
   ports:
-    - port: 1234
+    - port: 3000
       protocol: TCP
       targetPort: 3000
   selector:
