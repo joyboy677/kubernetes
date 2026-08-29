@@ -5,6 +5,7 @@ metadata:
   labels:
     app: todo-app-deployment
   name: todo-app-deployment
+  namespace: project
 spec:
   replicas: 1
   selector:

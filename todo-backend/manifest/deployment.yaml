@@ -5,6 +5,7 @@ metadata:
   labels:
     app: todo-backend-dep
   name: todo-backend-dep
+  namespace: project
 spec:
   replicas: 1
   selector:

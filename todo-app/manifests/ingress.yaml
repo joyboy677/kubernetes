@@ -3,6 +3,7 @@ kind: Ingress
 metadata:
   creationTimestamp: null
   name: my-ingress
+  namespace: project
 spec:
   rules:
     - host: localhost
