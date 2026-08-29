@@ -5,6 +5,7 @@ metadata:
   labels:
     app: logoutput
   name: logoutput
+  namespace: exercises
 spec:
   replicas: 1
   selector:

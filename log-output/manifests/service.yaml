@@ -5,11 +5,12 @@ metadata:
   labels:
     app: logoutput
   name: logoutput
+  namespace: exercises
 spec:
   ports:
-  - port: 2345
-    protocol: TCP
-    targetPort: 3000
+    - port: 2345
+      protocol: TCP
+      targetPort: 3000
   selector:
     app: logoutput
 status:

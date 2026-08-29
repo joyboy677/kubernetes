@@ -5,6 +5,7 @@ metadata:
   labels:
     app: ping-pong-dep
   name: ping-pong-dep
+  namespace: exercises
 spec:
   replicas: 1
   selector:

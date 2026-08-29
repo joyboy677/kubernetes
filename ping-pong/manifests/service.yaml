@@ -5,6 +5,7 @@ metadata:
   labels:
     app: ping-pong-dep
   name: ping-pong-svc
+  namespace: exercises
 spec:
   ports:
     - port: 3000
