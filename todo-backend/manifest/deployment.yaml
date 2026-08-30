@@ -19,7 +19,9 @@ spec:
         app: todo-backend-dep
     spec:
       containers:
-        - image: joyboy67/todo-backend:2.1
+        - image: joyboy67/todo-backend:2.6.1
           name: todo-backend
-          resources: {}
+          envFrom:
+            - configMapRef:
+                name: todo-backend-config
 status: {}

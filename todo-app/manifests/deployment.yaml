@@ -19,8 +19,11 @@ spec:
         app: todo-app-deployment
     spec:
       containers:
-        - image: joyboy67/todo-app:2.2
+        - image: joyboy67/todo-app:2.6
           name: todo-app
+          envFrom:
+            - configMapRef:
+                name: todo-app-config
           volumeMounts:
             - mountPath: /app/files
               name: todo-storage

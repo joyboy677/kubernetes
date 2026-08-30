@@ -1,7 +1,8 @@
 const express = require('express');
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
+const MAX_TODO_LENGTH = parseInt(process.env.MAX_TODO_LENGTH, 10) || 140;
 
 app.use(express.json());
 
@@ -22,8 +23,8 @@ app.post('/todos', (req, res) => {
         return res.status(400).json({ error: 'Todo item text is required' });
     }
 
-    if (todoText.length > 140) {
-        return res.status(400).json({ error: 'Todo item exceeds maximum 140 characters' });
+    if (todoText.length > MAX_TODO_LENGTH) {
+        return res.status(400).json({ error: `Todo item exceeds maximum ${MAX_TODO_LENGTH} characters` });
     }
 
     const newTodo = todoText.trim();

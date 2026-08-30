@@ -5,11 +5,14 @@ const axios = require('axios');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const TODO_BACKEND_URL = process.env.TODO_BACKEND_URL || 'http://localhost:3001';
+const TODO_BACKEND_URL = process.env.TODO_BACKEND_URL || 'http://localhost:3000';
+const PICSUM_URL = process.env.PICSUM_URL || 'https://picsum.photos/1200';
+const FILES_DIR = process.env.FILES_DIR || path.join(__dirname, 'files');
+const CACHE_MINUTES = parseInt(process.env.CACHE_MINUTES, 10) || 10;
 
 app.use(express.urlencoded({ extended: true }));
 
-const directory = path.join(__dirname, 'files');
+const directory = FILES_DIR;
 const imagePath = path.join(directory, 'image.jpg');
 const timestampPath = path.join(directory, 'image_timestamp.txt');
 
@@ -17,12 +20,12 @@ if (!fs.existsSync(directory)) {
   fs.mkdirSync(directory, { recursive: true });
 }
 
-const TEN_MINUTES_MS = 10 * 60 * 1000;
+const TEN_MINUTES_MS = CACHE_MINUTES * 60 * 1000;
 let refreshing = false;
 
 const fetchNewImage = async () => {
   try {
-    const response = await axios.get('https://picsum.photos/1200', {
+    const response = await axios.get(PICSUM_URL, {
       responseType: 'arraybuffer',
     });
     fs.writeFileSync(imagePath, response.data);
@@ -45,7 +48,7 @@ const ensureValidImage = async () => {
   const isStale = Date.now() - lastFetch > TEN_MINUTES_MS;
 
   if (isStale && !refreshing) {
-    console.log('Image is older than 10 minutes. Refreshing in background...');
+    console.log(`Image is older than ${CACHE_MINUTES} minutes. Refreshing in background...`);
     refreshing = true;
     fetchNewImage().finally(() => {
       refreshing = false;
