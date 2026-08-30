@@ -21,3 +21,4 @@
 | 2.2 | [todo backend](https://github.com/joyboy677/kubernetes/tree/2.2/todo-backend) |
 | 2.3 | [namespaces](https://github.com/joyboy677/kubernetes/tree/2.3/manifests) |
 | 2.4 | [namespaces](https://github.com/joyboy677/kubernetes/tree/2.4/manifests) |
+| 2.5 | [Log output](https://github.com/joyboy677/kubernetes/tree/2.5/log-output) |

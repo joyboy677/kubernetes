@@ -6,8 +6,17 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 const logPath = path.join('/usr/src/app/files', 'log.txt');
+const configFilePath = path.join('/usr/src/app/config', 'information.txt');
 const pingUrl = `http://ping-pong-svc:${port}/pingpong`;
+
 app.get('/', async (req, res) => {
+    let fileContent = '';
+    if (fs.existsSync(configFilePath)) {
+        fileContent = fs.readFileSync(configFilePath, 'utf8').trim();
+    }
+
+    const envMessage = process.env.MESSAGE || '';
+
     let logData = 'No log data yet';
     if (fs.existsSync(logPath)) {
         logData = fs.readFileSync(logPath, 'utf8').trim();
@@ -16,14 +25,13 @@ app.get('/', async (req, res) => {
     let pingCount = '0';
     try {
         const response = await fetch(pingUrl);
-
         pingCount = await response.text();
     } catch (error) {
         console.error('Failed to fetch pongs:', error.message);
     }
 
     res.setHeader('Content-Type', 'text/plain');
-    res.send(`${logData}\nPing / Pongs: ${pingCount}`);
+    res.send(`file content: ${fileContent}\nenv variable: MESSAGE=${envMessage}\n${logData}\nPing / Pongs: ${pingCount}`);
 });
 
 app.listen(port, () => {

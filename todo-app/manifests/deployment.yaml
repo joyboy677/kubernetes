@@ -27,4 +27,4 @@ spec:
       volumes:
         - name: todo-storage
           persistentVolumeClaim:
-            claimName: log-claim
+            claimName: todo-claim

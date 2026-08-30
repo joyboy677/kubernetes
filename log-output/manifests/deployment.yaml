@@ -19,20 +19,31 @@ spec:
         app: logoutput
     spec:
       containers:
-        - image: joyboy67/log-output:2.1
+        - image: joyboy67/log-output:2.5
           name: log-writer
           command: ["node", "writer.js"]
           volumeMounts:
             - name: shared-logs
               mountPath: /usr/src/app/files
 
-        - image: joyboy67/log-output:2.1
+        - image: joyboy67/log-output:2.5
           name: log-reader
           command: ["node", "reader.js"]
+          env:
+            - name: MESSAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: my-config
+                  key: MESSAGE
           volumeMounts:
             - name: shared-logs
               mountPath: /usr/src/app/files
+            - name: config-volume
+              mountPath: /usr/src/app/config
       volumes:
         - name: shared-logs
           persistentVolumeClaim:
             claimName: log-claim
+        - name: config-volume
+          configMap:
+            name: my-config

@@ -3,6 +3,7 @@ kind: Ingress
 metadata:
   creationTimestamp: null
   name: shared-ingress
+  namespace: exercises
 spec:
   rules:
     - host: localhost
