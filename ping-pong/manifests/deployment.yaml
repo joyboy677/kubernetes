@@ -19,5 +19,8 @@ spec:
         app: ping-pong-dep
     spec:
       containers:
-        - image: joyboy67/ping-pong:2.1
+        - image: joyboy67/ping-pong:2.7.1
           name: ping-pong
+          env:
+            - name: DATABASE_URL
+              value: postgres://postgres:mysecretpassword@postgres-svc:5432/pingpongdb
