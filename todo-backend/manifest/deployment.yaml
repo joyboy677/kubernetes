@@ -19,9 +19,15 @@ spec:
         app: todo-backend-dep
     spec:
       containers:
-        - image: joyboy67/todo-backend:2.6.1
+        - image: joyboy67/todo-backend:2.8.1
           name: todo-backend
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: DATABASE_URL
+
           envFrom:
             - configMapRef:
                 name: todo-backend-config
-status: {}

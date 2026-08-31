@@ -1,22 +1,45 @@
 const express = require('express');
+const { Pool } = require('pg');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const MAX_TODO_LENGTH = parseInt(process.env.MAX_TODO_LENGTH, 10) || 140;
 
-app.use(express.json());
-
-let todos = [
-    'Learn Kubernetes basics',
-    'Deploy application to cluster',
-    'Configure persistent volumes'
-];
-
-app.get('/todos', (req, res) => {
-    res.json(todos);
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL
 });
 
-app.post('/todos', (req, res) => {
+app.use(express.json());
+
+const initDb = async () => {
+    try {
+        await pool.query(`
+      CREATE TABLE IF NOT EXISTS todos (
+        id SERIAL PRIMARY KEY,
+        text TEXT NOT NULL
+      );
+    `);
+
+        const res = await pool.query('SELECT COUNT(*) FROM todos');
+        if (parseInt(res.rows[0].count, 10) === 0) {
+            await pool.query("INSERT INTO todos (text) VALUES ('Learn Kubernetes basics'), ('Deploy application to cluster'), ('Configure persistent volumes')");
+        }
+    } catch (err) {
+        console.error(err);
+    }
+};
+initDb();
+
+app.get('/todos', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT text FROM todos');
+        res.json(result.rows.map(row => row.text));
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.post('/todos', async (req, res) => {
     const todoText = req.body.todo || req.body.text;
 
     if (!todoText || typeof todoText !== 'string' || todoText.trim() === '') {
@@ -28,9 +51,13 @@ app.post('/todos', (req, res) => {
     }
 
     const newTodo = todoText.trim();
-    todos.push(newTodo);
 
-    res.status(201).json(newTodo);
+    try {
+        await pool.query('INSERT INTO todos (text) VALUES ($1)', [newTodo]);
+        res.status(201).json(newTodo);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 app.listen(PORT, () => {
