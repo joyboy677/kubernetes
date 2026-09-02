@@ -196,7 +196,6 @@ app.get('/', async (req, res) => {
               type="text"
               id="todo-input"
               name="todo"
-              maxlength="140"
               placeholder="Enter a new todo (max 140 characters)"
               required
             />

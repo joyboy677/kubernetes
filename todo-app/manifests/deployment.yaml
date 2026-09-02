@@ -19,7 +19,7 @@ spec:
         app: todo-app-deployment
     spec:
       containers:
-        - image: joyboy67/todo-app:2.6
+        - image: joyboy67/todo-app:2.10
           name: todo-app
           envFrom:
             - configMapRef:

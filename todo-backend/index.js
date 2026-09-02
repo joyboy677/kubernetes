@@ -1,4 +1,5 @@
 const express = require('express');
+const morgan = require('morgan');
 const { Pool } = require('pg');
 
 const app = express();
@@ -9,6 +10,7 @@ const pool = new Pool({
     connectionString: process.env.DATABASE_URL
 });
 
+app.use(morgan('combined'));
 app.use(express.json());
 
 const initDb = async () => {
@@ -43,10 +45,12 @@ app.post('/todos', async (req, res) => {
     const todoText = req.body.todo || req.body.text;
 
     if (!todoText || typeof todoText !== 'string' || todoText.trim() === '') {
+        console.log(`REJECTED: Empty todo payload`);
         return res.status(400).json({ error: 'Todo item text is required' });
     }
 
     if (todoText.length > MAX_TODO_LENGTH) {
+        console.log(`REJECTED: Todo length ${todoText.length} exceeds max ${MAX_TODO_LENGTH} - "${todoText}"`);
         return res.status(400).json({ error: `Todo item exceeds maximum ${MAX_TODO_LENGTH} characters` });
     }
 

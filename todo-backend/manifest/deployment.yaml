@@ -19,7 +19,7 @@ spec:
         app: todo-backend-dep
     spec:
       containers:
-        - image: joyboy67/todo-backend:2.8.1
+        - image: joyboy67/todo-backend:2.10
           name: todo-backend
           env:
             - name: DATABASE_URL
