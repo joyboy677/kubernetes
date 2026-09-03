@@ -14,6 +14,8 @@ spec:
       labels:
         app: postgres
     spec:
+      securityContext:
+        fsGroup: 999
       containers:
         - name: postgres
           image: postgres:16
@@ -22,6 +24,8 @@ spec:
               value: mysecretpassword
             - name: POSTGRES_DB
               value: pingpongdb
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
           ports:
             - containerPort: 5432
               name: postgres

@@ -7,11 +7,10 @@ metadata:
   name: ping-pong-svc
   namespace: exercises
 spec:
+  type: LoadBalancer
   ports:
     - port: 3000
       protocol: TCP
       targetPort: 3000
   selector:
     app: ping-pong-dep
-status:
-  loadBalancer: {}
