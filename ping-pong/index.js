@@ -12,7 +12,9 @@ pool.query(`
   CREATE TABLE IF NOT EXISTS pings (id INT PRIMARY KEY, counter INT);
   INSERT INTO pings (id, counter) VALUES (1, 0) ON CONFLICT DO NOTHING;
 `);
-
+app.get('/', (req, res) => {
+    res.status(200).send('OK');
+});
 app.get('/pingpong', async (req, res) => {
     const result = await pool.query(
         'UPDATE pings SET counter = counter + 1 WHERE id = 1 RETURNING counter'
