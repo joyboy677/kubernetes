@@ -7,7 +7,7 @@ const port = process.env.PORT || 3000;
 
 const logPath = path.join('/usr/src/app/files', 'log.txt');
 const configFilePath = path.join('/usr/src/app/config', 'information.txt');
-const pingUrl = `http://ping-pong-svc:${port}/pingpong`;
+const pingUrl = `http://ping-pong-svc:${port}/`;
 
 app.get('/', async (req, res) => {
     let fileContent = '';

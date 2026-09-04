@@ -19,14 +19,14 @@ spec:
         app: logoutput
     spec:
       containers:
-        - image: joyboy67/log-output:2.5
+        - image: joyboy67/log-output:3.4
           name: log-writer
           command: ["node", "writer.js"]
           volumeMounts:
             - name: shared-logs
               mountPath: /usr/src/app/files
 
-        - image: joyboy67/log-output:2.5
+        - image: joyboy67/log-output:3.4
           name: log-reader
           command: ["node", "reader.js"]
           env:
