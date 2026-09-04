@@ -7,7 +7,7 @@ metadata:
   name: logoutput
   namespace: exercises
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:
     - port: 2345
       protocol: TCP
