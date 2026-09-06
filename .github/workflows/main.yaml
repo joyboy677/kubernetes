@@ -2,6 +2,8 @@ name: Release application
 
 on:
   push:
+    branches:
+      - "*"
 
 permissions:
   contents: read
@@ -63,11 +65,10 @@ jobs:
 
       - name: Deploy
         run: |-
-          RAW_BRANCH=${GITHUB_REF#refs/heads/}
-          if [ "$RAW_BRANCH" = "main" ]; then
+          if [ "$BRANCH" = "main" ]; then
             ENV_NAMESPACE="project"
           else
-            ENV_NAMESPACE="$RAW_BRANCH"
+            ENV_NAMESPACE="$BRANCH"
           fi
 
           kubectl create namespace $ENV_NAMESPACE || true
