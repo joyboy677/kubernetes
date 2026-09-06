@@ -11,7 +11,8 @@ spec:
   selector:
     matchLabels:
       app: todo-app-deployment
-  strategy: {}
+  strategy:
+    type: Recreate
   template:
     metadata:
       creationTimestamp: null
@@ -19,7 +20,7 @@ spec:
         app: todo-app-deployment
     spec:
       containers:
-        - image: joyboy67/todo-app:2.10
+        - image: todo-app
           name: todo-app
           envFrom:
             - configMapRef:
