@@ -15,4 +15,4 @@ resources:
   - todo-backend/manifests/postgres-secret.yaml
   - todo-backend/manifests/postgres.yaml
   - todo-backend/manifests/service.yaml
-  - postgres-backup/manifests/cronjob.yaml
+  - postgres-backup/cronjob.yaml
