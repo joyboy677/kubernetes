@@ -12,6 +12,7 @@ const pool = new Pool({
 
 app.use(morgan('combined'));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const initDb = async () => {
     try {
@@ -35,6 +36,7 @@ initDb();
 app.get('/', (req, res) => {
     res.status(200).send('OK');
 });
+
 app.get('/todos', async (req, res) => {
     try {
         const result = await pool.query('SELECT text FROM todos');
@@ -45,6 +47,10 @@ app.get('/todos', async (req, res) => {
 });
 
 app.post('/todos', async (req, res) => {
+    if (!req.body) {
+        return res.status(400).json({ error: 'Missing or unparseable request body' });
+    }
+
     const todoText = req.body.todo || req.body.text;
 
     if (!todoText || typeof todoText !== 'string' || todoText.trim() === '') {
