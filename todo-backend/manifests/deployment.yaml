@@ -1,25 +1,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
+  name: todo-backend-dep
   labels:
     app: todo-backend-dep
-  name: todo-backend-dep
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: todo-backend-dep
-  strategy: {}
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: todo-backend-dep
     spec:
       containers:
-        - image: todo-backend
-          name: todo-backend
+        - name: todo-backend
+          image: todo-backend
+          resources:
+            requests:
+              cpu: "30m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
           env:
             - name: DATABASE_URL
               valueFrom:
@@ -31,7 +35,7 @@ spec:
                 name: todo-backend-config
           readinessProbe:
             httpGet:
-              path: /todos
+              path: /
               port: 3000
             initialDelaySeconds: 5
             periodSeconds: 10

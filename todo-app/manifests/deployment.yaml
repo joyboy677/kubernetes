@@ -1,10 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
+  name: todo-app-deployment
   labels:
     app: todo-app-deployment
-  name: todo-app-deployment
 spec:
   replicas: 1
   selector:
@@ -14,13 +13,19 @@ spec:
     type: Recreate
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: todo-app-deployment
     spec:
       containers:
-        - image: todo-app
-          name: todo-app
+        - name: todo-app
+          image: todo-app
+          resources:
+            requests:
+              cpu: "20m"
+              memory: "64Mi"
+            limits:
+              cpu: "150m"
+              memory: "256Mi"
           envFrom:
             - configMapRef:
                 name: todo-app-config
