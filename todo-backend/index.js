@@ -32,6 +32,9 @@ const initDb = async () => {
 };
 initDb();
 
+app.get('/', (req, res) => {
+    res.status(200).send('OK');
+});
 app.get('/todos', async (req, res) => {
     try {
         const result = await pool.query('SELECT text FROM todos');
