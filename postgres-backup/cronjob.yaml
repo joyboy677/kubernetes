@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgres-backup-cronjob
+  namespace: project
+spec:
+  schedule: "0 0 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: postgres-backup
+              image: europe-north1-docker.pkg.dev/smiling-destiny-507412-m9/dwk-repo/postgres-backup:latest
+              env:
+                - name: DATABASE_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: postgres-secret
+                      key: DATABASE_URL
+                - name: GCS_BUCKET
+                  value: "todo-db-backups-smiling-destiny-507412-m9"
+              volumeMounts:
+                - name: sa-key-volume
+                  mountPath: /secret
+                  readOnly: true
+          volumes:
+            - name: sa-key-volume
+              secret:
+                secretName: storage-sa-key

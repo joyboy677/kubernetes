@@ -5,7 +5,6 @@ metadata:
   labels:
     app: todo-backend-dep
   name: todo-backend-svc
-  namespace: project
 spec:
   type: NodePort
   ports:

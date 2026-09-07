@@ -5,7 +5,6 @@ metadata:
   labels:
     app: todo-backend-dep
   name: todo-backend-dep
-  namespace: project
 spec:
   replicas: 1
   selector:
@@ -27,7 +26,12 @@ spec:
                 secretKeyRef:
                   name: postgres-secret
                   key: DATABASE_URL
-
           envFrom:
             - configMapRef:
                 name: todo-backend-config
+          readinessProbe:
+            httpGet:
+              path: /todos
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
