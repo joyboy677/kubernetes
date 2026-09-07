@@ -35,3 +35,27 @@
 | 3.6 | [CICD](https://github.com/joyboy677/kubernetes/tree/3.6/.github/workflows) |
 | 3.7 | [CICD](https://github.com/joyboy677/kubernetes/tree/3.7/.github/workflows) |
 | 3.8 | [CICD](https://github.com/joyboy677/kubernetes/tree/3.8/.github/workflows) |
+| 3.9 | [DBaaS vs DIY](#exercise-39-dbaas-vs-diy) |
+
+---
+
+### Exercise 3.9: DBaaS vs DIY
+
+#### Overview Comparison
+
+| Metric | DBaaS (Managed - e.g., Cloud SQL) | DIY (In-Cluster GKE StatefulSet) |
+| :--- | :--- | :--- |
+| **Initialization Effort** | **Minimal**: Spin up in minutes via CLI or GCP Console. | **High**: Requires configuring StatefulSets, PVCs, StorageClasses, and Secrets. |
+| **Initialization Cost** | **Higher Baseline**: Dedicated instance charges and managed vendor markup. | **Lower Initial Cost**: Runs directly on existing cluster node resources. |
+| **Ongoing Maintenance** | **Automated**: GCP manages OS patches, engine updates, and HA failovers. | **High Effort**: Team must manually handle node drains, updates, and disk sizing. |
+| **Backup Methods & Ease** | **Turnkey**: Automated daily snapshots and point-in-time recovery with 1 click. | **Manual**: Requires tools like `pgBackRest` or Velero to handle GCS backups and WAL logs. |
+
+#### Pros & Cons
+
+* **DBaaS (Managed Database)**
+  * **Pros:** Zero operational overhead, reliable out-of-the-box HA/failover, and simple backup recovery.
+  * **Cons:** Higher infrastructure cost, cloud vendor lock-in, and limited low-level database customization.
+
+* **DIY (In-Cluster Database)**
+  * **Pros:** Cheaper at raw resource cost, no vendor markups, and completely cloud-agnostic/portable via GitOps.
+  * **Cons:** Risk of data loss during node maintenance, heavy operational burden, and complex disaster recovery setup.
