@@ -64,4 +64,4 @@
 
 | 3.11 | [Todo app](https://github.com/joyboy677/kubernetes/tree/3.11/todo-app) |
 
-| 3.12 | [GKE Logs Screenshot](https://github.com/joyboy677/kubernetes/tree/3.11/logs.png) |
+| 3.12 | [GKE Logs Screenshot](https://github.com/joyboy677/kubernetes/tree/3.12/logs.png) |
