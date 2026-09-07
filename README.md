@@ -35,7 +35,7 @@
 | 3.6 | [CICD](https://github.com/joyboy677/kubernetes/tree/3.6/.github/workflows) |
 | 3.7 | [CICD](https://github.com/joyboy677/kubernetes/tree/3.7/.github/workflows) |
 | 3.8 | [CICD](https://github.com/joyboy677/kubernetes/tree/3.8/.github/workflows) |
-| 3.9 | [DBaaS vs DIY](#exercise-39-dbaas-vs-diy) |
+| 3.9 | [DBaaS vs DIY](https://github.com/joyboy677/kubernetes/tree/3.9) |
 
 ---
 
