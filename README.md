@@ -61,5 +61,5 @@
   * **Cons:** Risk of data loss during node maintenance, heavy operational burden, and complex disaster recovery setup.
 
 | 3.10 | [Cronjob Backup](https://github.com/joyboy677/kubernetes/tree/3.10/postgres-backup) |
-
 | 3.11 | [Todo app](https://github.com/joyboy677/kubernetes/tree/3.11/todo-app) |
+| 3.12 | [GKE Logs Screenshot](./logs.png) |
