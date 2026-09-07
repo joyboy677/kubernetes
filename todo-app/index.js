@@ -61,7 +61,7 @@ app.get('/image.jpg', async (req, res) => {
   res.sendFile(imagePath);
 });
 
-app.post('/todos', async (req, res) => {
+app.post('/create-todo', async (req, res) => {
   const todo = req.body.todo;
   if (todo) {
     try {
@@ -191,7 +191,7 @@ app.get('/', async (req, res) => {
             <img src="/image.jpg" alt="Picsum Hourly Image" />
           </div>
 
-          <form id="todo-form" action="/todos" method="POST">
+          <form id="todo-form" action="/create-todo" method="POST">
             <input
               type="text"
               id="todo-input"
