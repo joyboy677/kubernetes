@@ -59,3 +59,5 @@
 * **DIY (In-Cluster Database)**
   * **Pros:** Cheaper at raw resource cost, no vendor markups, and completely cloud-agnostic/portable via GitOps.
   * **Cons:** Risk of data loss during node maintenance, heavy operational burden, and complex disaster recovery setup.
+
+| 3.10 | [Cronjob Backup](https://github.com/joyboy677/kubernetes/tree/3.10/postgres-backup) |
