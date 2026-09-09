@@ -20,6 +20,15 @@ app.get('/', async (req, res) => {
     res.send(result.rows[0].counter.toString());
 });
 
+app.get('/healthz', async (req, res) => {
+    try {
+        await pool.query('SELECT 1');
+        res.status(200).send('OK');
+    } catch (err) {
+        console.error('Database connection failed:', err.message);
+        res.status(500).send('Database connection failed');
+    }
+});
 app.listen(port, () => {
     console.log(`Ping-pong app listening on port ${port}`);
 });

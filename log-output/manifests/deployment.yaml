@@ -1,7 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
   labels:
     app: logoutput
   name: logoutput
@@ -11,24 +10,28 @@ spec:
   selector:
     matchLabels:
       app: logoutput
-  strategy: {}
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: logoutput
     spec:
       containers:
-        - image: joyboy67/log-output:3.4
+        - image: joyboy67/log-output:4.1
           name: log-writer
           command: ["node", "writer.js"]
           volumeMounts:
             - name: shared-logs
               mountPath: /usr/src/app/files
 
-        - image: joyboy67/log-output:3.4
+        - image: joyboy67/log-output:4.1
           name: log-reader
           command: ["node", "reader.js"]
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
           env:
             - name: MESSAGE
               valueFrom:

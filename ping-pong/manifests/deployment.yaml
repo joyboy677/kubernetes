@@ -16,16 +16,16 @@ spec:
         app: ping-pong-dep
     spec:
       containers:
-        - image: joyboy67/ping-pong:3.4
+        - image: joyboy67/ping-pong:4.1
           name: ping-pong
           ports:
             - containerPort: 3000
           readinessProbe:
             httpGet:
-              path: /
+              path: /healthz
               port: 3000
             initialDelaySeconds: 5
-            periodSeconds: 10
+            periodSeconds: 5
           env:
             - name: DATABASE_URL
               value: postgres://postgres:mysecretpassword@postgres-svc:5432/pingpongdb
