@@ -1,143 +1,85 @@
-name: Release application (Docker Hub)
+name: Release application
 
 on:
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - "*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
 
 env:
-  DOCKER_USER: joyboy67
+  PROJECT_ID: ${{ secrets.GKE_PROJECT }}
+  GKE_CLUSTER: dwk-cluster
+  GKE_ZONE: europe-north1-b
+  REGISTRY: europe-north1-docker.pkg.dev
+  REPOSITORY: dwk-repo
+  BRANCH: ${{ github.ref_name }}
 
 jobs:
-  changes:
-    name: Detect changed apps
+  build-publish-deploy:
+    name: Build, Publish and Deploy
     runs-on: ubuntu-latest
-    outputs:
-      projects: ${{ steps.filter.outputs.projects }}
-      exercises: ${{ steps.filter.outputs.exercises }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dorny/paths-filter@v3
-        id: filter
-        with:
-          filters: |
-            projects:
-              - 'todo-app/**'
-              - 'todo-backend/**'
-              - 'postgres-backup/**'
-            exercises:
-              - 'log-output/**'
-              - 'ping-pong/**'
-
-  deploy-projects:
-    name: Build, Publish and Deploy - projects namespace
-    needs: changes
-    if: needs.changes.outputs.projects == 'true'
-    runs-on: ubuntu-latest
-    env:
-      ENV_NAMESPACE: projects
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: docker/login-action@v3
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.SERVICE_ACCOUNT }}
 
-      - run: |
-          TAG="main-${GITHUB_SHA::7}"
-          echo "APP_IMAGE=${DOCKER_USER}/todo-app:${TAG}" >> $GITHUB_ENV
-          echo "BACKEND_IMAGE=${DOCKER_USER}/todo-backend:${TAG}" >> $GITHUB_ENV
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
 
-      - uses: docker/build-push-action@v6
+      - name: Configure Docker
+        run: gcloud --quiet auth configure-docker ${{ env.REGISTRY }}
+
+      - name: Form Image Names
+        run: |-
+          echo "APP_IMAGE=$REGISTRY/$PROJECT_ID/$REPOSITORY/todo-app:$BRANCH-$GITHUB_SHA" >> $GITHUB_ENV
+          echo "BACKEND_IMAGE=$REGISTRY/$PROJECT_ID/$REPOSITORY/todo-backend:$BRANCH-$GITHUB_SHA" >> $GITHUB_ENV
+
+      - name: Build & Publish todo-app
+        run: |-
+          docker build --tag $APP_IMAGE ./todo-app
+          docker push $APP_IMAGE
+
+      - name: Build & Publish todo-backend
+        run: |-
+          docker build --tag $BACKEND_IMAGE ./todo-backend
+          docker push $BACKEND_IMAGE
+
+      - name: Get GKE credentials
+        uses: google-github-actions/get-gke-credentials@v3
         with:
-          context: ./todo-app
-          push: true
-          tags: ${{ env.APP_IMAGE }}
+          cluster_name: ${{ env.GKE_CLUSTER }}
+          project_id: ${{ env.PROJECT_ID }}
+          location: ${{ env.GKE_ZONE }}
 
-      - uses: docker/build-push-action@v6
-        with:
-          context: ./todo-backend
-          push: true
-          tags: ${{ env.BACKEND_IMAGE }}
+      - name: Set up Kustomize
+        uses: imranismail/setup-kustomize@v3
 
-      - name: Set up kubectl
-        uses: azure/setup-kubectl@v4
+      - name: Deploy
+        run: |-
+          if [ "$BRANCH" = "main" ]; then
+            ENV_NAMESPACE="project"
+          else
+            ENV_NAMESPACE="$BRANCH"
+          fi
 
-      - uses: imranismail/setup-kustomize@v3
-
-      - name: Configure kubeconfig
-        run: |
-          mkdir -p ~/.kube
-          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > ~/.kube/config
-
-      - name: Deploy to Kubernetes
-        run: |
           kubectl create namespace $ENV_NAMESPACE || true
+          kubectl config set-context --current --namespace=$ENV_NAMESPACE
 
           kustomize edit set namespace $ENV_NAMESPACE
-          kustomize edit set image todo-app=${{ env.APP_IMAGE }}
-          kustomize edit set image todo-backend=${{ env.BACKEND_IMAGE }}
+          kustomize edit set image todo-app=$APP_IMAGE
+          kustomize edit set image todo-backend=$BACKEND_IMAGE
 
           kustomize build . | kubectl apply -f -
           kubectl rollout status deployment/todo-app-deployment -n $ENV_NAMESPACE
           kubectl rollout status deployment/todo-backend-dep -n $ENV_NAMESPACE
-          kubectl get services -o wide -n $ENV_NAMESPACE
-
-  deploy-exercises:
-    name: Build, Publish and Deploy - exercises namespace
-    needs: changes
-    if: needs.changes.outputs.exercises == 'true'
-    runs-on: ubuntu-latest
-    env:
-      ENV_NAMESPACE: exercises
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - run: |
-          TAG="main-${GITHUB_SHA::7}"
-          echo "LOG_OUTPUT_IMAGE=${DOCKER_USER}/log-output:${TAG}" >> $GITHUB_ENV
-          echo "PING_PONG_IMAGE=${DOCKER_USER}/ping-pong:${TAG}" >> $GITHUB_ENV
-
-      - uses: docker/build-push-action@v6
-        with:
-          context: ./log-output
-          push: true
-          tags: ${{ env.LOG_OUTPUT_IMAGE }}
-
-      - uses: docker/build-push-action@v6
-        with:
-          context: ./ping-pong
-          push: true
-          tags: ${{ env.PING_PONG_IMAGE }}
-
-      - name: Set up kubectl
-        uses: azure/setup-kubectl@v4
-
-      - uses: imranismail/setup-kustomize@v3
-
-      - name: Configure kubeconfig
-        run: |
-          mkdir -p ~/.kube
-          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > ~/.kube/config
-
-      - name: Deploy to Kubernetes
-        working-directory: ./ping-pong/manifests
-        run: |
-          kubectl create namespace $ENV_NAMESPACE || true
-
-          kustomize edit set namespace $ENV_NAMESPACE
-          kustomize edit set image log-output=${{ env.LOG_OUTPUT_IMAGE }}
-          kustomize edit set image ping-pong=${{ env.PING_PONG_IMAGE }}
-
-          kustomize build . | kubectl apply -f -
-          kubectl rollout status deployment/log-output-deployment -n $ENV_NAMESPACE
-          kubectl rollout status deployment/ping-pong-deployment -n $ENV_NAMESPACE
           kubectl get services -o wide -n $ENV_NAMESPACE
