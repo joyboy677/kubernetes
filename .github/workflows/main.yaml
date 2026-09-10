@@ -3,16 +3,39 @@ name: Release application (Docker Hub)
 on:
   push:
     branches:
-      - "**"
+      - main
 
 env:
   DOCKER_USER: joyboy67
-  BRANCH: ${{ github.ref_name }}
 
 jobs:
-  build-publish-deploy:
-    name: Build, Publish and Deploy
+  changes:
+    name: Detect changed apps
     runs-on: ubuntu-latest
+    outputs:
+      projects: ${{ steps.filter.outputs.projects }}
+      exercises: ${{ steps.filter.outputs.exercises }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            projects:
+              - 'todo-app/**'
+              - 'todo-backend/**'
+              - 'postgres-backup/**'
+            exercises:
+              - 'log-output/**'
+              - 'ping-pong/**'
+
+  deploy-projects:
+    name: Build, Publish and Deploy - projects namespace
+    needs: changes
+    if: needs.changes.outputs.projects == 'true'
+    runs-on: ubuntu-latest
+    env:
+      ENV_NAMESPACE: projects
 
     steps:
       - uses: actions/checkout@v4
@@ -23,7 +46,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - run: |
-          TAG="${BRANCH}-${GITHUB_SHA::7}"
+          TAG="main-${GITHUB_SHA::7}"
           echo "APP_IMAGE=${DOCKER_USER}/todo-app:${TAG}" >> $GITHUB_ENV
           echo "BACKEND_IMAGE=${DOCKER_USER}/todo-backend:${TAG}" >> $GITHUB_ENV
 
@@ -51,8 +74,6 @@ jobs:
 
       - name: Deploy to Kubernetes
         run: |
-          ENV_NAMESPACE="exercises"
-
           kubectl create namespace $ENV_NAMESPACE || true
 
           kustomize edit set namespace $ENV_NAMESPACE
@@ -62,4 +83,61 @@ jobs:
           kustomize build . | kubectl apply -f -
           kubectl rollout status deployment/todo-app-deployment -n $ENV_NAMESPACE
           kubectl rollout status deployment/todo-backend-dep -n $ENV_NAMESPACE
+          kubectl get services -o wide -n $ENV_NAMESPACE
+
+  deploy-exercises:
+    name: Build, Publish and Deploy - exercises namespace
+    needs: changes
+    if: needs.changes.outputs.exercises == 'true'
+    runs-on: ubuntu-latest
+    env:
+      ENV_NAMESPACE: exercises
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - run: |
+          TAG="main-${GITHUB_SHA::7}"
+          echo "LOG_OUTPUT_IMAGE=${DOCKER_USER}/log-output:${TAG}" >> $GITHUB_ENV
+          echo "PING_PONG_IMAGE=${DOCKER_USER}/ping-pong:${TAG}" >> $GITHUB_ENV
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: ./log-output
+          push: true
+          tags: ${{ env.LOG_OUTPUT_IMAGE }}
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: ./ping-pong
+          push: true
+          tags: ${{ env.PING_PONG_IMAGE }}
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v4
+
+      - uses: imranismail/setup-kustomize@v3
+
+      - name: Configure kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > ~/.kube/config
+
+      - name: Deploy to Kubernetes
+        working-directory: ./ping-pong/manifests
+        run: |
+          kubectl create namespace $ENV_NAMESPACE || true
+
+          kustomize edit set namespace $ENV_NAMESPACE
+          kustomize edit set image log-output=${{ env.LOG_OUTPUT_IMAGE }}
+          kustomize edit set image ping-pong=${{ env.PING_PONG_IMAGE }}
+
+          kustomize build . | kubectl apply -f -
+          kubectl rollout status deployment/log-output-deployment -n $ENV_NAMESPACE
+          kubectl rollout status deployment/ping-pong-deployment -n $ENV_NAMESPACE
           kubectl get services -o wide -n $ENV_NAMESPACE
