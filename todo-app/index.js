@@ -73,6 +73,15 @@ app.post('/create-todo', async (req, res) => {
   res.redirect('/');
 });
 
+app.post('/break', async (req, res) => {
+  try {
+    await axios.post(`${TODO_BACKEND_URL}/break`);
+  } catch (err) {
+    console.error('Failed to break backend:', err.message);
+  }
+  res.redirect('/');
+});
+
 app.get('/', async (req, res) => {
   await ensureValidImage();
 
@@ -200,6 +209,10 @@ app.get('/', async (req, res) => {
               required
             />
             <button type="submit">Send</button>
+          </form>
+
+          <form action="/break" method="POST">
+            <button type="submit">Break the app</button>
           </form>
 
           <h2>Todos</h2>

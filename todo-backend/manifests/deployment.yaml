@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: todo-backend
-          image: todo-backend
+          image: joyboy67/todo-backend:4.2
           resources:
             requests:
               cpu: "30m"
@@ -35,7 +35,13 @@ spec:
                 name: todo-backend-config
           readinessProbe:
             httpGet:
-              path: /
+              path: /healthz
               port: 3000
             initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 3000
+            initialDelaySeconds: 10
             periodSeconds: 10

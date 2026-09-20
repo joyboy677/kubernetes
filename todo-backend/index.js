@@ -5,6 +5,7 @@ const { Pool } = require('pg');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const MAX_TODO_LENGTH = parseInt(process.env.MAX_TODO_LENGTH, 10) || 140;
+let isHealthy = true;
 
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL
@@ -35,6 +36,25 @@ initDb();
 
 app.get('/', (req, res) => {
     res.status(200).send('OK');
+});
+
+app.get('/healthz', async (req, res) => {
+    if (!isHealthy) {
+        return res.status(500).json({ status: 'unhealthy' });
+    }
+
+    try {
+        await pool.query('SELECT 1');
+        return res.status(200).json({ status: 'ok' });
+    } catch (err) {
+        console.error('Health check failed:', err.message);
+        return res.status(500).json({ status: 'unhealthy' });
+    }
+});
+
+app.post('/break', (req, res) => {
+    isHealthy = false;
+    res.status(200).json({ status: 'unhealthy' });
 });
 
 app.get('/todos', async (req, res) => {
