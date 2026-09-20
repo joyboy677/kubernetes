@@ -71,3 +71,5 @@
 | 4.2 | [Todo app health checks](https://github.com/joyboy677/kubernetes/tree/4.2/todo-backend) |
 
 | 4.3 | [promethius](https://github.com/joyboy677/kubernetes/tree/4.3/promethius.png) |
+
+| 4.4 | [Ping-pong canary](https://github.com/joyboy677/kubernetes/tree/4.4/ping-pong) |
