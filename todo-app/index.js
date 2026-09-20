@@ -73,6 +73,15 @@ app.post('/create-todo', async (req, res) => {
   res.redirect('/');
 });
 
+app.post('/todos/:id/done', async (req, res) => {
+  try {
+    await axios.put(`${TODO_BACKEND_URL}/todos/${req.params.id}`, { done: true });
+  } catch (err) {
+    console.error('Failed to mark todo as done:', err.message);
+  }
+  res.redirect('/');
+});
+
 app.post('/break', async (req, res) => {
   try {
     await axios.post(`${TODO_BACKEND_URL}/break`);
@@ -94,7 +103,13 @@ app.get('/', async (req, res) => {
   }
 
   const todoItems = todos
-    .map(todo => `<li class="todo-item">${todo}</li>`)
+    .map(todo => `
+      <li class="todo-item ${todo.done ? 'todo-item--done' : ''}">
+        <span>${todo.text}</span>
+        ${todo.done
+          ? '<strong class="done-label">Done</strong>'
+          : `<form action="/todos/${todo.id}/done" method="POST"><button class="done-button" type="submit">Mark done</button></form>`}
+      </li>`)
     .join('\n');
 
   res.send(`
@@ -189,6 +204,35 @@ app.get('/', async (req, res) => {
             padding: 0.9rem 1rem;
             margin-bottom: 0.6rem;
             border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+          }
+
+          .todo-item--done {
+            border-left-color: #aaa;
+            color: #666;
+            text-decoration: line-through;
+          }
+
+          .todo-item form {
+            margin: 0;
+          }
+
+          .done-button {
+            background: #2877c9;
+            padding: 0.45rem 0.75rem;
+            font-size: 0.85rem;
+          }
+
+          .done-button:hover {
+            background: #1e63a8;
+          }
+
+          .done-label {
+            color: #347a38;
+            text-decoration: none;
           }
         </style>
       </head>

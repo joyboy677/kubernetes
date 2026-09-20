@@ -20,9 +20,12 @@ const initDb = async () => {
         await pool.query(`
       CREATE TABLE IF NOT EXISTS todos (
         id SERIAL PRIMARY KEY,
-        text TEXT NOT NULL
+        text TEXT NOT NULL,
+        done BOOLEAN NOT NULL DEFAULT false
       );
     `);
+
+        await pool.query('ALTER TABLE todos ADD COLUMN IF NOT EXISTS done BOOLEAN NOT NULL DEFAULT false');
 
         const res = await pool.query('SELECT COUNT(*) FROM todos');
         if (parseInt(res.rows[0].count, 10) === 0) {
@@ -59,8 +62,8 @@ app.post('/break', (req, res) => {
 
 app.get('/todos', async (req, res) => {
     try {
-        const result = await pool.query('SELECT text FROM todos');
-        res.json(result.rows.map(row => row.text));
+        const result = await pool.query('SELECT id, text, done FROM todos ORDER BY id');
+        res.json(result.rows);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -86,10 +89,37 @@ app.post('/todos', async (req, res) => {
     const newTodo = todoText.trim();
 
     try {
-        await pool.query('INSERT INTO todos (text) VALUES ($1)', [newTodo]);
-        res.status(201).json(newTodo);
+        const result = await pool.query(
+            'INSERT INTO todos (text) VALUES ($1) RETURNING id, text, done',
+            [newTodo]
+        );
+        res.status(201).json(result.rows[0]);
     } catch (err) {
         res.status(500).json({ error: err.message });
+    }
+});
+
+app.put('/todos/:id', async (req, res) => {
+    const id = Number.parseInt(req.params.id, 10);
+    const { done } = req.body;
+
+    if (!Number.isInteger(id) || typeof done !== 'boolean') {
+        return res.status(400).json({ error: 'Todo id and boolean done value are required' });
+    }
+
+    try {
+        const result = await pool.query(
+            'UPDATE todos SET done = $1 WHERE id = $2 RETURNING id, text, done',
+            [done, id]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'Todo not found' });
+        }
+
+        return res.json(result.rows[0]);
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
     }
 });
 

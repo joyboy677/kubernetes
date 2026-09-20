@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: todo-backend
-          image: joyboy67/todo-backend:4.2
+          image: joyboy67/todo-backend:4.5
           resources:
             requests:
               cpu: "30m"
