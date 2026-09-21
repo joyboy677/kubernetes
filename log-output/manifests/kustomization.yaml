@@ -10,4 +10,4 @@ resources:
 images:
 - name: joyboy67/log-output
   newName: joyboy67/log-output
-  newTag: 78390ff4f87c55a8fcdf20ed3cd77b6977e9ceca
+  newTag: a19a2565bddee46152bdda3d6e5286a4ffd9349a
