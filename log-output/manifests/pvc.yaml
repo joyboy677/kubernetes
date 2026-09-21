@@ -4,6 +4,8 @@ metadata:
   name: log-claim
   namespace: exercises
 spec:
+  storageClassName: log-pv
+  volumeName: log-pv
   accessModes:
     - ReadWriteOnce
   resources:
