@@ -75,3 +75,5 @@
 | 4.4 | [Ping-pong canary](https://github.com/joyboy677/kubernetes/tree/4.4/ping-pong) |
 
 | 4.5 | [Todo done status](https://github.com/joyboy677/kubernetes/tree/4.5/todo-app) |
+
+| 4.7 | [Log output](https://github.com/joyboy677/kubernetes/tree/4.7/log-output) |
