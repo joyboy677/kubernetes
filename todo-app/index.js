@@ -107,8 +107,8 @@ app.get('/', async (req, res) => {
       <li class="todo-item ${todo.done ? 'todo-item--done' : ''}">
         <span>${todo.text}</span>
         ${todo.done
-          ? '<strong class="done-label">Done</strong>'
-          : `<form action="/todos/${todo.id}/done" method="POST"><button class="done-button" type="submit">Mark done</button></form>`}
+        ? '<strong class="done-label">Done</strong>'
+        : `<form action="/todos/${todo.id}/done" method="POST"><button class="done-button" type="submit">Mark done</button></form>`}
       </li>`)
     .join('\n');
 
@@ -116,7 +116,7 @@ app.get('/', async (req, res) => {
     <!DOCTYPE html>
     <html>
       <head>
-        <title>Todo App</title>
+        <title>Todo App ttest</title>
         <style>
           * { box-sizing: border-box; }
 
