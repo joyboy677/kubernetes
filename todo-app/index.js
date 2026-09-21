@@ -116,7 +116,7 @@ app.get('/', async (req, res) => {
     <!DOCTYPE html>
     <html>
       <head>
-        <title>Todo App ttest</title>
+        <title>Todo App test 2</title>
         <style>
           * { box-sizing: border-box; }
 
