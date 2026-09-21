@@ -18,7 +18,7 @@ resources:
 images:
 - name: joyboy67/todo-app
   newName: joyboy67/todo-app
-  newTag: bfdba920d030b9b71e0b3d3af4f7b5d86e85e61e
+  newTag: 5104029fd80279512a87465a7fa0682edfd98000
 - name: joyboy67/todo-backend
   newName: joyboy67/todo-backend
-  newTag: bfdba920d030b9b71e0b3d3af4f7b5d86e85e61e
+  newTag: 5104029fd80279512a87465a7fa0682edfd98000
