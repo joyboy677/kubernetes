@@ -81,3 +81,5 @@
 | 4.8 | [Todo project GitOps](https://github.com/joyboy677/kubernetes/tree/4.8/) | 
 
 | 4.9 | [Todo project environments](https://github.com/joyboy677/kubernetes/tree/4.9/) |
+
+| 4.10 | [Todo project code repository](https://github.com/joyboy677/kubernetes) and [Kubernetes configuration repository](https://github.com/joyboy677/kubernetes-config) |
